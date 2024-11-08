@@ -7,6 +7,8 @@
  *
  * @author Adm
  */
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
@@ -70,32 +72,17 @@ public class ProdutosDAO {
 
     return listagem ;
     }
-    public ArrayList<ProdutosDTO> listarProdutosVedidos() {
+    public void venderProduto(int id){
         conn = new conectaDAO().connectDB();
-        String sql = "select * from produtos where status = 'vendido'";
+        String sql ="update produtos set status = 'Vendido' where id =?;";
         try {
             prep = conn.prepareStatement(sql);
-            resultset = prep.executeQuery();
-
-            listagem.clear();
-
-            while (resultset.next()) {
-                ProdutosDTO p = new ProdutosDTO();
-                p.setId(resultset.getInt("id"));
-                p.setNome(resultset.getString("nome"));
-                p.setValor(resultset.getInt("valor"));
-                p.setStatus(resultset.getString("status"));
-
-                listagem.add(p);
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao listar produtos vendidos\n" + e.getMessage());
-            System.out.println("Erro ao listar produtos vendidos: " + e.getMessage());
-
+            prep.setString(1, String.valueOf(id));
+            prep.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "erro ao vender: "+ex.getMessage());
         }
-    
-
-    return listagem ;
+        
     }
 
 }
